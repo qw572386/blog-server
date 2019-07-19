@@ -9,6 +9,7 @@ const logger = require('koa-logger')
 
 const config = require('./config')
 const routes = require('./routes')
+const dbInit = require('./db')
 
 const port = process.env.PORT || config.port
 
@@ -16,11 +17,14 @@ const port = process.env.PORT || config.port
 onerror(app)
 
 // middlewares
-app.use(bodyparser())
+app.use(bodyparser({ enableTypes:['json', 'form', 'text']}))
   .use(json())
   .use(logger())
   .use(require('koa-static')(__dirname + '/public'))
   .use(cors())
+
+// init database
+dbInit()
 
 // logger
 app.use(async (ctx, next) => {
