@@ -6,6 +6,8 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
+const passport = require('./utils/passport')
+const session = require('koa-session')
 
 const config = require('./config')
 const routes = require('./routes')
@@ -13,11 +15,15 @@ const dbInit = require('./db')
 
 const port = process.env.PORT || config.port
 
+app.keys = ['secret']
+app.use(session({}, app))
+
 // error handler
 onerror(app)
 
 // middlewares
 app.use(bodyparser({ enableTypes:['json', 'form', 'text']}))
+  .use(session({}, app))
   .use(json())
   .use(logger())
   .use(require('koa-static')(__dirname + '/public'))
@@ -25,6 +31,10 @@ app.use(bodyparser({ enableTypes:['json', 'form', 'text']}))
 
 // init database
 dbInit()
+
+// 初始化passport
+app.use(passport.initialize())
+app.use(passport.session())
 
 // logger
 app.use(async (ctx, next) => {

@@ -4,6 +4,10 @@ const config = require('../config')
 
 const userModel = require('../models/user')
 class User {
+    /**
+     * 创建新用户
+     * @param {Object} params 参数对象
+     */
     static async createUser(params) {
         const hasUser = await userModel.findOne({email: params.email})
         if (hasUser) {
@@ -14,6 +18,10 @@ class User {
         user.save()
         return user
     }
+    /**
+     * 用户登录
+     * @param {Object} params 
+     */
     static async login(params) {
         const user = await userModel.findOne({email: params.email})
         if (!user) {
@@ -23,9 +31,10 @@ class User {
         if (!isMatch) {
             throw new Error('用户名或密码错误')
         }
-        const {userName, email, avatar, _id} = user;
-        const token = jwt.sign({userId: _id, userName, email, avatar}, config.secretKey, { expiresIn: config.expiresIn })
-        return token
+        await userModel.findOneAndUpdate({email: params.email}, {lastLoginAt: new Date()})
+        const {userName, email, avatar, password, _id} = user;
+        const token = jwt.sign({ userId: _id, userName, email, avatar, password }, config.secretKey, { expiresIn: config.expiresIn })
+        return 'Bearer ' + token
     }
 }
 

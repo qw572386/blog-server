@@ -18,6 +18,14 @@ class User {
             ctx.body = result.error(error.message)
         }
     }
+    static async getUser(ctx) {
+        if (!ctx.req.user) {
+            ctx.body = result.error('验证登录信息失败')
+            return
+        }
+        const user = {...ctx.req.user, password: null} // 用户密码不返回
+        ctx.body = result.success(user)
+    }
 }
 
 module.exports = User
