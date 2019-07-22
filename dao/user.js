@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const config = require('../config')
+const gravatar = require('gravatar')
 
 const userModel = require('../models/user')
 class User {
@@ -13,6 +14,7 @@ class User {
         if (hasUser) {
             throw new Error('邮箱已被占用, 请更换')
         }
+        params.avatar = gravatar.url(params.email, {s: '200', r: 'pg', d: 'mm'})
         const user = new userModel(params)
         user.password = await bcrypt.hash(params.password, 10)
         user.save()

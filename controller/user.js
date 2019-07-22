@@ -3,8 +3,8 @@ const result = require('../utils/result')
 class User {
     static async createUser(ctx) {
         try {
-            const {userName, email} = await userDao.createUser(ctx.request.body)
-            ctx.body = result.success({userName, email})
+            const {userName, email, avatar} = await userDao.createUser(ctx.request.body)
+            ctx.body = result.success({userName, email, avatar})
         } catch (error) {
             ctx.body = result.error(error.message)
         }
