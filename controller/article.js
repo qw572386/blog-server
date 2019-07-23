@@ -42,6 +42,22 @@ class Article {
             ctx.body = result.error(error.message)
         }
     }
+    /**
+     * 修改文章
+     * @param {Object} ctx 
+     */
+    static async update(ctx) {
+        try {
+            const options = {
+                articleId: ctx.query.articleId,
+                canditions: ctx.request.body
+            }
+            await articleDao.update(options)
+            ctx.body = result.success(undefined, '修改文章成功')
+        } catch (error) {
+            ctx.body = result.error(error.message)
+        }
+    }
 }
 
 module.exports = Article

@@ -49,6 +49,24 @@ class Article {
         }
         return result
     }
+    /**
+     * 修改文章
+     * @param {String} articleId 文章ID
+     * @param {Object} canditions 参数
+     */
+    static async update({articleId = '', canditions = null}) {
+        if (!articleId) {
+            throw new Error('修改文章失败文章id不能空')
+        }
+        if (!canditions || !Object.keys(canditions).length) {
+            throw new Error('修改文章失败修改参数不能空')
+        }
+        const result = await articleModel.updateOne({ _id: articleId }, canditions)
+        if (!result.nModified) {
+            throw new Error('文章不存在或您没有任何修改')
+        }
+        return result
+    }
 }
 
 module.exports = Article
